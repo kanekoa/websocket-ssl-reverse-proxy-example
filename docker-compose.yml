@@ -24,13 +24,12 @@ services:
       - webnet
 
   nginx:
-    image: openresty/openresty:latest
+    image: nginx:latest
     container_name: nginx_proxy
     ports:
       - "443:443" # HTTPS ポート
     volumes:
-      - ./nginx/nginx.conf:/usr/local/openresty/nginx/conf/nginx.conf  # OpenRestyの設定ファイルパスにマウント
-      - ./nginx/set_backend.lua:/etc/nginx/set_backend.lua
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./certs:/etc/nginx/certs # SSL証明書をマウント
     depends_on:
       - nodejs1
