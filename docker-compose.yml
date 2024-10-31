@@ -1,0 +1,43 @@
+services:
+  nodejs1:
+    image: node:14
+    container_name: nodejs_server1
+    working_dir: /app
+    volumes:
+      - ./node-app:/app
+    ports:
+      - "3001:3000" # Node.js サーバが使用するポート
+    command: "node server.js"
+    networks:
+      - webnet
+
+  nodejs2:
+    image: node:14
+    container_name: nodejs_server2
+    working_dir: /app
+    volumes:
+      - ./node-app:/app
+    ports:
+      - "3002:3000" # Node.js サーバが使用するポート
+    command: "node server.js"
+    networks:
+      - webnet
+
+  nginx:
+    image: openresty/openresty:latest
+    container_name: nginx_proxy
+    ports:
+      - "443:443" # HTTPS ポート
+    volumes:
+      - ./nginx/nginx.conf:/usr/local/openresty/nginx/conf/nginx.conf  # OpenRestyの設定ファイルパスにマウント
+      - ./nginx/set_backend.lua:/etc/nginx/set_backend.lua
+      - ./certs:/etc/nginx/certs # SSL証明書をマウント
+    depends_on:
+      - nodejs1
+      - nodejs2
+    networks:
+      - webnet
+
+networks:
+  webnet:
+    driver: bridge
