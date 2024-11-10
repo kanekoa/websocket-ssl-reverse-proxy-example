@@ -5,10 +5,12 @@ const https = require('https');
 // 証明書ファイルを読み込む
 const ca = fs.readFileSync('../certs/server.crt');
 
+const backend = process.argv[2] ?? 'http://nodejs1:3000';
+console.log(`backend: ${backend}`);
+
 // オプション設定
 const ws = new WebSocket(
-  'wss://localhost/?backend=http://nodejs1:3000',
-  // 'wss://localhost/?backend=http://nodejs2:3000',
+  `wss://localhost/?backend=${backend}`,
   {
     rejectUnauthorized: false,
     ca: ca
